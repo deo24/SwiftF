@@ -8,6 +8,13 @@
 
 open class AppNavigationController: UINavigationController,UINavigationControllerDelegate {
         
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        UIApplication.shared.mIsDidAppear  = true
+        UIApplication.shared.mIsWillAppear = true
+    }
+    
     override open var shouldAutorotate: Bool{
         get{
             return topViewController?.shouldAutorotate ?? false
