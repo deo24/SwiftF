@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SwiftF"
-  s.version      = "0.0.2"
+  s.version      = "0.0.3"
   s.summary      = "mobile frame"
 
   s.homepage     = "https://github.com/deo24/SwiftF"

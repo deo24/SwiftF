@@ -22,7 +22,7 @@ extension UIApplication{
         }
         
         get{
-            return objc_getAssociatedObject(self, &kIsWillAppear) as! Bool
+            return (objc_getAssociatedObject(self, &kIsWillAppear) as? Bool) ?? true
         }
     }
 
@@ -34,7 +34,7 @@ extension UIApplication{
         }
         
         get{
-            return objc_getAssociatedObject(self, &kIsDidAppear) as! Bool
+            return (objc_getAssociatedObject(self, &kIsDidAppear) as? Bool) ?? true
         }
     }
     
