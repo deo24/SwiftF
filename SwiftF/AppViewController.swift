@@ -120,17 +120,20 @@ open class AppViewController: UIViewController{
 
 extension UIViewController {
     func findVC(name:String) -> UIViewController?{
-        for child in childViewControllers {
-            let childName = NSStringFromClass(child.classForCoder)
-            if childName == name {
-                return child
-            }else {
-                if let temp = child.findVC(name: name) {
-                    return temp
+        guard name == NSStringFromClass(self.classForCoder) else{
+            for child in childViewControllers {
+                let childName = NSStringFromClass(child.classForCoder)
+                if childName == name {
+                    return child
+                }else {
+                    if let temp = child.findVC(name: name) {
+                        return temp
+                    }
                 }
             }
+            return nil
         }
-        return nil
+        return self
     }
 }
 
