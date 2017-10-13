@@ -43,7 +43,7 @@ public let Message_back_preViewController:Int  = 5
 
 //协议
 extension UIViewController : OnMessageProtocol,RelayoutViewsProtocol{
-
+    
     static open let callSwizzle:Void  = UIViewController.validateISwizzle()
     
     private class func validateISwizzle(){
@@ -89,11 +89,11 @@ extension UIViewController : OnMessageProtocol,RelayoutViewsProtocol{
     
     @objc private func iSwizzle_viewWillAppear(animated:Bool){
         NotificationCenter.default.addObserver(self, selector: #selector(checkOrientation), name:.UIApplicationDidChangeStatusBarFrame, object: nil)
-        self.performSelector(onMainThread: #selector(didWillApear), with: nil, waitUntilDone: false)
+        self.performSelector(onMainThread: #selector(willAppear), with: nil, waitUntilDone: true)
     }
     
     @objc private func iSwizzle_viewDidAppear(animated:Bool){
-        self.performSelector(onMainThread: #selector(didDidApear), with: nil, waitUntilDone: false)
+        self.performSelector(onMainThread: #selector(didAppear), with: nil, waitUntilDone: true)
     }
     
     @objc private func iSwizzle_viewWillDisappear(animated:Bool){
@@ -101,14 +101,14 @@ extension UIViewController : OnMessageProtocol,RelayoutViewsProtocol{
     }
     
     @objc private func iSwizzle_viewDidDisappear(animated:Bool){
-        UIApplication.shared.mSem.signal();
+        
     }
     
-    @objc private func didWillApear(){
-        UIApplication.shared.mIsWillAppear = true
+    @objc private func willAppear(){
+        
     }
     
-    @objc private func didDidApear(){
+    @objc private func didAppear(){
         UIApplication.shared.mIsDidAppear = true
     }
     
@@ -133,31 +133,11 @@ extension UIViewController : OnMessageProtocol,RelayoutViewsProtocol{
     }
     
     open func onMessage(obj:Any!,type:Int,arg:Any?){
-        
         guard let parentViewController = self.mParentViewController else {
             assertionFailure("\(object_getClassName(self)) 's parentViewController is nil")
             return
         }
-        
-        switch type {
-        case Message_clear_viewController:
-            UIApplication.shared.mSem = DispatchSemaphore(value: 0)
-            print("clear start")
-            
-            DispatchQueue.global().async {
-                print(UIApplication.shared.mSem.wait(timeout: .distantFuture))
-                
-                for _ in 0..<self.view.subviews.count {
-                    let aview = self.view.subviews[0]
-                    aview.removeFromSuperview()
-                }
-                self.view = nil
-                print("clear done")
-            }
-            
-        default:
-            parentViewController.onMessage(obj: obj, type: type, arg: arg)
-        }
+        parentViewController.onMessage(obj: obj, type: type, arg: arg)
     }
 }
 
@@ -249,3 +229,4 @@ extension UIView {
         }
     }
 }
+

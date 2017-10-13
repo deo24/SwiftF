@@ -11,49 +11,45 @@ open class AppViewController: UIViewController{
     override open func onMessage(obj: Any!, type: Int, arg: Any?) {
         switch (type) {
             
-            case Message_push_viewController:
-                guard let dic = (arg as? Dictionary<String, Any>),
-                        let name = dic[kViewControllerName] as? String,
-                        let cls_new = NSClassFromString("\(Bundle.main.namespace)" + "." + "\(name)") as? UIViewController.Type,
-                        let navigationController = navigationController
-                    else {
+        case Message_push_viewController:
+            guard let dic = (arg as? Dictionary<String, Any>),
+                let name = dic[kViewControllerName] as? String,
+                let cls_new = NSClassFromString("\(Bundle.main.namespace)" + "." + "\(name)") as? UIViewController.Type,
+                let navigationController = navigationController
+                else {
+                    return
+            }
+            let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
+            for index in 0..<navigationController.viewControllers.count{
+                let vc_old = navigationController.viewControllers[index]
+                let className_old = NSStringFromClass(vc_old.classForCoder)
+                let className_new = NSStringFromClass(cls_new)
+                if (className_new as NSString).isEqual(to: className_old) {
+                    navigationController.popToViewController(vc_old, animated: bIs)
                     return
                 }
-                let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
-                for index in 0..<navigationController.viewControllers.count{
-                    let vc_old = navigationController.viewControllers[index]
-                    let className_old = NSStringFromClass(vc_old.classForCoder)
-                    let className_new = NSStringFromClass(cls_new)
-                    if (className_new as NSString).isEqual(to: className_old) {
-                        navigationController.popToViewController(vc_old, animated: bIs)
-                        return
-                    }
-                }
+            }
             
-                let aviewController = cls_new.init()
-                print(aviewController.view)
-                aviewController.mParentViewController = self
-                aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
-                aviewController.mIsNavigationBarShow = (dic[kViewControllerNavigationBarShow] as? Bool) ?? false
-                aviewController.mFromViewController = obj as? UIViewController
-                navigationController.pushViewController(aviewController, animated: bIs)
+            let aviewController = cls_new.init()
+            print(aviewController.view)
+            aviewController.mParentViewController = self
+            aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
+            aviewController.mIsNavigationBarShow = (dic[kViewControllerNavigationBarShow] as? Bool) ?? false
+            aviewController.mFromViewController = obj as? UIViewController
+            navigationController.pushViewController(aviewController, animated: bIs)
             
         case Message_argument_viewController:
             guard   let dic = (arg as? Dictionary<String, Any>),
-                    let name = dic[kViewControllerName] as? String,
-                    let cls_new = NSClassFromString("\(Bundle.main.namespace)" + "." + "\(name)") as? UIViewController.Type,
-                    let navigationController = navigationController
+                let name = dic[kViewControllerName] as? String,
+                let cls_new = NSClassFromString("\(Bundle.main.namespace)" + "." + "\(name)") as? UIViewController.Type,
+                let navigationController = navigationController
                 else {
                     return
             }
             
             let className_new = NSStringFromClass(cls_new)
             let completion = { (vc:UIViewController)->Void in
-                DispatchQueue.global().async {
-                    UIApplication.shared.mSem = DispatchSemaphore(value: 0)
-                    print(UIApplication.shared.mSem.wait(timeout: .distantFuture))
-                    vc.onMessage(obj: obj, type: type, arg: dic[kViewControllerArgument])
-                }
+                vc.onMessage(obj: obj, type: type, arg: dic[kViewControllerArgument])
             }
             
             if  let presentedViewController = navigationController.presentedViewController,
@@ -94,15 +90,15 @@ open class AppViewController: UIViewController{
                 else {
                     return
             }
-
+            
             let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
             let completion = dic[kViewControllerCompletion] as? ()->()
             navigationController.dismiss(animated: bIs, completion: completion)
             
         case Message_back_preViewController:
             guard   let dic = (arg as? Dictionary<String, Any>),
-                    let navigationController = navigationController else{
-                return
+                let navigationController = navigationController else{
+                    return
             }
             
             let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
@@ -142,3 +138,4 @@ extension AppViewController:UINavigationControllerDelegate{
         viewController.relayoutViews(orientation: UIApplication.shared.statusBarOrientation)
     }
 }
+

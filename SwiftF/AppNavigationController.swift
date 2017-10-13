@@ -7,12 +7,11 @@
 //
 
 open class AppNavigationController: UINavigationController,UINavigationControllerDelegate {
-        
+    
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         UIApplication.shared.mIsDidAppear  = true
-        UIApplication.shared.mIsWillAppear = true
     }
     
     override open var shouldAutorotate: Bool{
@@ -34,7 +33,6 @@ open class AppNavigationController: UINavigationController,UINavigationControlle
         
         view.endEditing(true)
         UIApplication.shared.mIsDidAppear = false
-        UIApplication.shared.mIsWillAppear = false
         self.isNavigationBarHidden = !viewController.mIsNavigationBarShow
         super.pushViewController(viewController, animated: animated)
     }
@@ -45,7 +43,6 @@ open class AppNavigationController: UINavigationController,UINavigationControlle
         }
         
         UIApplication.shared.mIsDidAppear = false
-        UIApplication.shared.mIsWillAppear = false
         self.isNavigationBarHidden = !viewController.mIsNavigationBarShow
         return super.popToViewController(viewController, animated: animated)!
     }
@@ -65,8 +62,8 @@ open class AppNavigationController: UINavigationController,UINavigationControlle
     
     override open func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
         UIApplication.shared.mIsDidAppear = false
-        UIApplication.shared.mIsWillAppear = false
         viewControllerToPresent.relayoutViews(orientation: UIApplication.shared.statusBarOrientation)
         super.present(viewControllerToPresent, animated: flag, completion: completion)
     }
 }
+

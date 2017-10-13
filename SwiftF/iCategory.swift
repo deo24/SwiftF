@@ -14,18 +14,6 @@ var kSemaphore      = "_kSemaphore"
 
 extension UIApplication{
     
-    open var mIsWillAppear:Bool{
-        set(b){
-            willChangeValue(forKey: kIsWillAppear)
-            objc_setAssociatedObject(self, &kIsWillAppear, b, .OBJC_ASSOCIATION_ASSIGN)
-            didChangeValue(forKey: kIsWillAppear)
-        }
-        
-        get{
-            return (objc_getAssociatedObject(self, &kIsWillAppear) as? Bool) ?? true
-        }
-    }
-
     open var mIsDidAppear:Bool{
         set(b){
             willChangeValue(forKey: kIsDidAppear)
@@ -37,18 +25,6 @@ extension UIApplication{
             return (objc_getAssociatedObject(self, &kIsDidAppear) as? Bool) ?? true
         }
     }
-    
-    @objc open var mSem:DispatchSemaphore{
-        set(sem){
-            willChangeValue(forKey: kSemaphore)
-            objc_setAssociatedObject(self, &kSemaphore, sem, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            didChangeValue(forKey: kSemaphore)
-        }
-        
-        get{
-            return objc_getAssociatedObject(self, &kSemaphore) as! DispatchSemaphore
-        }
-    }
 }
 
 //MARK: === Bundle  ===
@@ -57,3 +33,4 @@ extension Bundle{
         return Bundle.main.infoDictionary!["CFBundleName"] as? String ?? ""
     }
 }
+
