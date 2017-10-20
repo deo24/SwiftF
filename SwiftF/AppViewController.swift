@@ -20,15 +20,28 @@ open class AppViewController: UIViewController{
                     return
             }
             let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
-            for index in 0..<navigationController.viewControllers.count{
-                let vc_old = navigationController.viewControllers[index]
-                let className_old = NSStringFromClass(vc_old.classForCoder)
+            
+            for vc in navigationController.viewControllers {
                 let className_new = NSStringFromClass(cls_new)
-                if (className_new as NSString).isEqual(to: className_old) {
-                    navigationController.popToViewController(vc_old, animated: bIs)
+                if let vc_new = vc.findVC(name: className_new) {
+                    if vc_new.parent != nil {
+                        navigationController.popToViewController(vc_new.parent!, animated: bIs)
+                    }else{
+                        navigationController.popToViewController(vc_new, animated: bIs)
+                    }
                     return
                 }
             }
+            
+//            for index in 0..<navigationController.viewControllers.count{
+//                let vc_old = navigationController.viewControllers[index]
+//                let className_old = NSStringFromClass(vc_old.classForCoder)
+//                let className_new = NSStringFromClass(cls_new)
+//                if (className_new as NSString).isEqual(to: className_old) {
+//                    navigationController.popToViewController(vc_old, animated: bIs)
+//                    return
+//                }
+//            }
             
             let aviewController = cls_new.init()
             print(aviewController.view)
