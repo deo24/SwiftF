@@ -33,17 +33,36 @@ open class AppViewController: UIViewController{
                 }
             }
             
-//            for index in 0..<navigationController.viewControllers.count{
-//                let vc_old = navigationController.viewControllers[index]
-//                let className_old = NSStringFromClass(vc_old.classForCoder)
-//                let className_new = NSStringFromClass(cls_new)
-//                if (className_new as NSString).isEqual(to: className_old) {
-//                    navigationController.popToViewController(vc_old, animated: bIs)
-//                    return
-//                }
-//            }
-            
             let aviewController = cls_new.init()
+            print(aviewController.view)
+            aviewController.mParentViewController = self
+            aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
+            aviewController.mIsNavigationBarShow = (dic[kViewControllerNavigationBarShow] as? Bool) ?? false
+            aviewController.mFromViewController = obj as? UIViewController
+            navigationController.pushViewController(aviewController, animated: bIs)
+        case Message_pushNIB_viewController:
+            guard let dic = (arg as? Dictionary<String, Any>),
+                let name = dic[kViewControllerName] as? String,
+                let cls_new = NSClassFromString("\(Bundle.main.namespace)" + "." + "\(name)") as? UIViewController.Type,
+                let navigationController = navigationController
+                else {
+                    return
+            }
+            let bIs = (dic[kViewControllerAnimation] as? Bool) ?? false
+            
+            for vc in navigationController.viewControllers {
+                let className_new = NSStringFromClass(cls_new)
+                if let vc_new = vc.findVC(name: className_new) {
+                    if vc_new.parent != nil {
+                        navigationController.popToViewController(vc_new.parent!, animated: bIs)
+                    }else{
+                        navigationController.popToViewController(vc_new, animated: bIs)
+                    }
+                    return
+                }
+            }
+            
+            let aviewController = cls_new.init(nibName: name, bundle: nil)
             print(aviewController.view)
             aviewController.mParentViewController = self
             aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false

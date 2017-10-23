@@ -39,6 +39,7 @@ public let Message_argument_viewController:Int = 2
 public let Message_present_viewController:Int  = 3
 public let Message_dismiss_viewController:Int  = 4
 public let Message_back_preViewController:Int  = 5
+public let Message_pushNIB_viewController:Int  = 6
 
 
 //协议
