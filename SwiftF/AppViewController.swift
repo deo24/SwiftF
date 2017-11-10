@@ -35,6 +35,8 @@ open class AppViewController: UIViewController{
             
             let aviewController = cls_new.init()
             print(aviewController.view)
+            aviewController.relayoutViews(orientation: .portrait)
+            
             aviewController.mParentViewController = self
             aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
             aviewController.mIsNavigationBarShow = (dic[kViewControllerNavigationBarShow] as? Bool) ?? false
@@ -64,6 +66,7 @@ open class AppViewController: UIViewController{
             
             let aviewController = cls_new.init(nibName: name, bundle: nil)
             print(aviewController.view)
+            aviewController.relayoutViews(orientation: .portrait)
             aviewController.mParentViewController = self
             aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
             aviewController.mIsNavigationBarShow = (dic[kViewControllerNavigationBarShow] as? Bool) ?? false
@@ -110,6 +113,7 @@ open class AppViewController: UIViewController{
             
             let aviewController = cls_new.init()
             print(aviewController.view)
+            aviewController.relayoutViews(orientation: .portrait)
             aviewController.mParentViewController = self
             aviewController.mFromViewController = obj as? UIViewController
             aviewController.mIsStatusBarHidden = (dic[kViewControllerStatusBarHidden] as? Bool) ?? false
@@ -165,9 +169,9 @@ extension UIViewController {
     }
 }
 
-extension AppViewController:UINavigationControllerDelegate{
-    open func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        viewController.relayoutViews(orientation: UIApplication.shared.statusBarOrientation)
-    }
-}
+//extension AppViewController:UINavigationControllerDelegate{
+//    open func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+//        viewController.relayoutViews(orientation: UIApplication.shared.statusBarOrientation)
+//    }
+//}
 
